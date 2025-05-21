@@ -1,0 +1,47 @@
+
+version: '3.9'
+
+services:
+  db:
+    image: septeunissen/mariadb:10.5
+    container_name: schimmenspel.nl_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: CzjgMAghPnFSOvdDqjXDXe
+      MYSQL_DATABASE: joomla
+      MYSQL_USER: joomlauser
+      MYSQL_PASSWORD: CzjgMAghPnFSOvdDqjXDXe
+    volumes:
+      - schimmenspel_db_data:/var/lib/mysql
+    ports:
+     - "3306:3306"
+
+  schimmenspel_joomla:
+    image: septeunissen/joomla:latest
+    container_name: schimmenspel.nl_joomla
+    restart: unless-stopped
+    ports:
+      - "2010:80"
+    environment:
+      JOOMLA_DB_HOST: db
+      JOOMLA_DB_USER: joomlauser
+      JOOMLA_DB_PASSWORD: CzjgMAghPnFSOvdDqjXDXe
+      JOOMLA_DB_NAME: joomla
+    volumes:
+      - schimmenspel_joomla_data:/var/www/html
+
+  phpmyadmin:
+    image: septeunissen/phpmyadmin:latest
+    container_name: schimmenspel.nl_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "2810:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: CzjgMAghPnFSOvdDqjXDXe
+
+volumes:
+  schimmenspel_joomla_data:
+  schimmenspel_db_data:
+
+
